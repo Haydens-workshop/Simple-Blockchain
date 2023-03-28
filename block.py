@@ -1,51 +1,53 @@
-import time
+from datetime import datetime
 from crypto_hash import crypto_hash
 
+DIFFICULTY = 4
+NONCE_RANGE = range(100000)
 
 class Block:
-
-#Block module
-    def __init__(self, timestamp, last_hash, hash, data):
+    def __init__(self, timestamp, last_hash, hash, transactions, nonce):
         self.timestamp = timestamp
         self.last_hash = last_hash
         self.hash = hash
-        self.data = data
+        self.transactions = transactions
+        self.nonce = nonce
 
     def __repr__(self):
-         return (
-             'Block('
-              f'timestamp: {self.timestamp}, '
-              f'last_hash: {self.last_hash}, '
-              f'hash: {self.hash}, '
-              f'data: {self.data})'
-         )
+        return (
+            f'Block('
+            f'timestamp: {self.timestamp}, '
+            f'last_hash: {self.last_hash}, '
+            f'hash: {self.hash}, '
+            f'transactions: {self.transactions}, '
+            f'nonce: {self.nonce})'
+        )
 
-    
-       
-       
     @staticmethod
+    def mine_block(last_block, transactions):
+        timestamp = datetime.now()
+        last_hash = last_block.hash
+        nonce = Block.find_nonce(last_hash, transactions)
+        hash = crypto_hash(timestamp, last_hash, transactions, nonce)
+        return Block(timestamp, last_hash, hash, transactions, nonce)
 
-    def mine_block(last_block, data):
-      #mine block based on the last_block and data.
-      timestamp = time.time()
-      last_hash = last_block.hash
-      hash = crypto_hash(timestamp, last_hash, data)
-      return Block(timestamp, last_hash, hash, data)
+    @staticmethod
+    def find_nonce(last_hash, transactions):
+        for nonce in NONCE_RANGE:
+            hash = crypto_hash(last_hash, transactions, nonce)
+            if hash.startswith('0' * DIFFICULTY):
+                return nonce
+        raise ValueError("No valid nonce found")
 
-
-  
-  
-  
-  #generating genesis block.
     @staticmethod
     def genesis():
-      return Block(1, 'genesis_last_hash', 'genesis_hash', [])
+        return Block(
+            timestamp=datetime.now(),
+            last_hash='genesis_last_hash',
+            hash='genesis_hash',
+            transactions=[],
+            nonce=0
+        )
 
-def main():
-    genesis_block = Block.genesis()
-    block = Block.mine_block(genesis_block, 'slurp')
-    print(block)
+    def add_transaction(self, transaction):
+        self.transactions.append(transaction)
 
-
-if __name__ == '__main__':
-    main()
