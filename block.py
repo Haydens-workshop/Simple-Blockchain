@@ -1,6 +1,7 @@
 import time
 from crypto_hash import crypto_hash
 
+
 class Block:
 
 #Block module
