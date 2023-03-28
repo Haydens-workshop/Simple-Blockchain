@@ -18,8 +18,8 @@ def crypto_hash(*args):
 
 
 def main():
-    print(f"crypto_hash('one', 2, [3]): {crypto_hash('one, 2, [3')}")
-    print(f"crypto_hash('2, 'one'[3]): {crypto_hash('one, 2, [3')}")
+    print(f"crypto_hash('one', 2, [3]): {crypto_hash('one', 2, [3])}")
+    print(f"crypto_hash('2', 'one', [3]): {crypto_hash('2', 'one', [3])}")
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()
