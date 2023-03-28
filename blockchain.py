@@ -1,10 +1,10 @@
 from block import Block
+from crypto_hash import crypto_hash
 
 class Blockchain:
 
     def __init__(self):
         self.chain = [Block.genesis()]
-
 
     def add_block(self, data):
         self.chain.append(Block.mine_block(self.chain[-1], data))
@@ -13,7 +13,6 @@ class Blockchain:
         return f'Blockchain: {self.chain}'
 
 def main():
-
     blockchain = Blockchain()
     blockchain.add_block('one')
     blockchain.add_block('two')
