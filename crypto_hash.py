@@ -1,21 +1,25 @@
 import hashlib
 import json
+import os
 
 def crypto_hash(*args):
-    #return a SHA-256 hash of given arguments.
+    # Generate a random salt
+    salt = os.urandom(16)
 
-    stringified_args = sorted(map(lambda data: json.dumps(data), args))
+    # Serialize the arguments and add the salt
+    serialized_args = json.dumps(args, sort_keys=True).encode('utf-8') + salt
 
-    print(f'stringified_args: {stringified_args}')
+    # Generate a HMAC using SHA-256 and the salt as the key
+    hmac = hashlib.sha256(salt).digest()
 
+    # Hash the serialized arguments using SHA-256
+    hashed_data = hashlib.sha256(serialized_args).digest()
 
-    joined_data = ''.join(stringified_args)
+    # Concatenate the HMAC and the hashed data
+    result = hmac + hashed_data
 
-    print(f'joined_data: {joined_data}')
-
-
-    return hashlib.sha256(joined_data.encode('utf-8')).hexdigest()
-
+    # Encode the result as a hexadecimal string
+    return result.hex()
 
 def main():
     print(f"crypto_hash('one', 2, [3]): {crypto_hash('one', 2, [3])}")
